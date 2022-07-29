@@ -1,202 +1,113 @@
-# By default, this script supports up to 5 pair of same apps for switching.
-# You may scale it if you want that.
+#!/usr/bin/env python3
+#
+# (c) Katarina & 5MysterySD V2
+#
+# All Right Reserved 
 
 import time
 import os
 from datetime import datetime
 import heroku3
 
-# Required vars
-# A = The creds of the first account
-# B = The creds of the second account
-FIRST_A_APPNAME = os.environ.get('FIRST_A_APPNAME',"")
-FIRST_A_APIKEY = os.environ.get('FIRST_A_APIKEY',"")
-FIRST_B_APPNAME = os.environ.get('FIRST_B_APPNAME',"")
-FIRST_B_APIKEY = os.environ.get('FIRST_B_APIKEY',"")
-FIRST_PROCESSTYPE = os.environ.get('FIRST_PROCESSTYPE',"")
-SECOND_A_APPNAME = os.environ.get('SECOND_A_APPNAME',"")
-SECOND_A_APIKEY = os.environ.get('SECOND_A_APIKEY',"")
-SECOND_B_APPNAME = os.environ.get('SECOND_B_APPNAME',"")
-SECOND_B_APIKEY = os.environ.get('SECOND_B_APIKEY',"")
-SECOND_PROCESSTYPE = os.environ.get('SECOND_PROCESSTYPE',"")
-THIRD_A_APPNAME = os.environ.get('THIRD_A_APPNAME',"")
-THIRD_A_APIKEY = os.environ.get('THIRD_A_APIKEY',"")
-THIRD_B_APPNAME = os.environ.get('THIRD_B_APPNAME',"")
-THIRD_B_APIKEY = os.environ.get('THIRD_B_APIKEY',"")
-THIRD_PROCESSTYPE = os.environ.get('THIRD_PROCESSTYPE',"")
-FOURTH_A_APPNAME = os.environ.get('FOURTH_A_APPNAME',"")
-FOURTH_A_APIKEY = os.environ.get('FOURTH_A_APIKEY',"")
-FOURTH_B_APPNAME = os.environ.get('FOURTH_B_APPNAME',"")
-FOURTH_B_APIKEY = os.environ.get('FOURTH_B_APIKEY',"")
-FOURTH_PROCESSTYPE = os.environ.get('FOURTH_PROCESSTYPE',"")
-FIFTH_A_APPNAME = os.environ.get('FIFTH_A_APPNAME',"")
-FIFTH_A_APIKEY = os.environ.get('FIFTH_A_APIKEY',"")
-FIFTH_B_APPNAME = os.environ.get('FIFTH_B_APPNAME',"")
-FIFTH_B_APIKEY = os.environ.get('FIFTH_B_APIKEY',"")
-FIFTH_PROCESSTYPE = os.environ.get('FIFTH_PROCESSTYPE',"")
+# Required vars >>>>>>>> Add Unlimited Number of Apps separated by space in each var
+# A = The Credentials of the First Account
+# B = The Credentials of the Second Account
+# C = The Credentials of the Third Account
+A_APPNAME = os.environ.get('A_APPNAME',"")
+A_APIKEY = os.environ.get('A_APIKEY',"")
+B_APPNAME = os.environ.get('B_APPNAME',"")
+B_APIKEY = os.environ.get('B_APIKEY',"")
+PROCESSTYPE = os.environ.get('PROCESSTYPE',"")
+CA_APPNAME = os.environ.get('CA_APPNAME',"")
+CB_APPNAME = os.environ.get('CB_APPNAME',"")
+C_APIKEY = os.environ.get('C_APIKEY',"")
 
-# The main script
+# List Forming >>>>>>>>
+A_APPNAME = A_APPNAME.split(" ")
+A_APIKEY = A_APIKEY.split(" ")
+B_APPNAME = B_APPNAME.split(" ")
+B_APIKEY = B_APIKEY.split(" ")
+PROCESSTYPE = PROCESSTYPE.split(" ")
+CA_APPNAME = CA_APPNAME.split(" ")
+CB_APPNAME = CB_APPNAME.split(" ")
+C_APIKEY = C_APIKEY.split(" ")
+
+# The Main Script Execution >>>>>>>>
 today = datetime.now()
 
-# First pair of apps
-print("[#1] Checking the conditions for the first app..")
-if(len(FIRST_PROCESSTYPE) != 0 and len(FIRST_A_APIKEY) != 0 and len(FIRST_A_APPNAME) != 0 and len(FIRST_B_APIKEY) != 0 and len(FIRST_B_APPNAME) != 0):
-  if(today.day == 15):
-    print("Changing the dyno to the second acc..")
-    heroku_conn = heroku3.from_key(FIRST_A_APIKEY)
-    app = heroku_conn.app(FIRST_A_APPNAME)
-    app.process_formation()[FIRST_PROCESSTYPE].scale(0)
-    print("The first app in the first acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(FIRST_B_APIKEY)
-    app = heroku_conn.app(FIRST_B_APPNAME)
-    app.process_formation()[FIRST_PROCESSTYPE].scale(1)
-    print("The first app in the second acc has been scaled up.")
-    print("Your first app has been shifted to the second acc.")
+# Multiple Pair of Apps >>>>>>>>
+print("Checking the Conditions & Vars for the app ..")
+if(len(PROCESSTYPE) != 0 and len(A_APIKEY) != 0 and len(A_APPNAME) != 0 and len(C_APIKEY) != 0 and len(CA_APPNAME) != 0 and len(CB_APPNAME) != 0 and len(B_APIKEY) != 0 and len(B_APPNAME) != 0):
+  if(today.day == 23):
+    for  (A, AAPP, PRO, B, BAPP, C, CAAPP, CBAPP) in zip(A_APIKEY, A_APPNAME, PROCESSTYPE, B_APIKEY, B_APPNAME, C_APIKEY, CA_APPNAME, CB_APPNAME):
+
+      print("Changing the Dyno of the First Account..")
+      heroku_conn = heroku3.from_key(A)
+      app = heroku_conn.app(AAPP)
+      app.process_formation()[PRO].scale(0)
+      print("The App in the First Account has been Scaled Down.")
+
+      time.sleep(5)
+
+      print("Changing the Dyno of the Second Account..")
+      heroku_conn = heroku3.from_key(B)
+      app = heroku_conn.app(BAPP)
+      app.process_formation()[PRO].scale(0)
+      print("The App in the Second Account has been Scaled Down.")
+
+      time.sleep(5)
+
+      print("Changing the Dyno of First App of the Third Account..")
+      heroku_conn = heroku3.from_key(C)
+      app = heroku_conn.app(CAAPP)
+      app.process_formation()[PRO].scale(1)
+      print("The First App in the Third Account has been Scaled Up.")
+
+      time.sleep(5)
+
+      print("Changing the Dyno of Second App of the Third Account..")
+      heroku_conn = heroku3.from_key(C)
+      app = heroku_conn.app(CBAPP)
+      app.process_formation()[PRO].scale(1)
+      print("The Second App in the Third Account has been Scaled Up.")
+
   elif(today.day == 1):
-    print("Changing the dyno to the first acc..")
-    heroku_conn = heroku3.from_key(FIRST_B_APIKEY)
-    app = heroku_conn.app(FIRST_B_APPNAME)
-    app.process_formation()[FIRST_PROCESSTYPE].scale(0)
-    print("The first app in the second acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(FIRST_A_APIKEY)
-    app = heroku_conn.app(FIRST_A_APPNAME)
-    app.process_formation()[FIRST_PROCESSTYPE].scale(1)
-    print("The first app in the first acc has been scaled up.")
-    print("Your first app has been shifted to the first acc.")
+    for  (A, AAPP, PRO, B, BAPP, C, CAAPP, CBAPP) in zip(A_APIKEY, A_APPNAME, PROCESSTYPE, B_APIKEY, B_APPNAME, C_APIKEY, CA_APPNAME, CB_APPNAME):
+
+      print("Changing the Dyno of First App of the Third Account..")
+      heroku_conn = heroku3.from_key(C)
+      app = heroku_conn.app(CAAPP)
+      app.process_formation()[PRO].scale(0)
+      print("The First App in the Third Account has been Scaled Down.")
+
+      time.sleep(5)
+
+      print("Changing the Dyno of Second App of the Third Account..")
+      heroku_conn = heroku3.from_key(C)
+      app = heroku_conn.app(CBAPP)
+      app.process_formation()[PRO].scale(0)
+      print("The Second App in the Third Account has been Scaled Down.")
+
+      time.sleep(5)
+
+      print("Changing the Dyno of the First Account..")
+      heroku_conn = heroku3.from_key(A)
+      app = heroku_conn.app(AAPP)
+      app.process_formation()[PRO].scale(1)
+      print("The App in the First Account has been Scaled Up.")
+
+      time.sleep(5)
+
+      print("Changing the Dyno of the Second Account..")
+      heroku_conn = heroku3.from_key(B)
+      app = heroku_conn.app(BAPP)
+      app.process_formation()[PRO].scale(1)
+      print("The App in the Second Account has been Scaled Up.")
+
   else:
-    print("Today is not 1st or 15nd.")
+    print("Today is not 1st or 23rd of Month")
 else:
-  print("Variables for the first app are not fully filled.")
-    
-# Second pair of apps
-print("\n[#2] Checking the conditions for the second app..")
-if(len(SECOND_PROCESSTYPE) != 0 and len(SECOND_A_APIKEY) != 0 and len(SECOND_A_APPNAME) != 0 and len(SECOND_B_APIKEY) != 0 and len(SECOND_B_APPNAME) != 0):
-  if(today.day == 15):
-    print("Changing the dyno to the second acc..")
-    heroku_conn = heroku3.from_key(SECOND_A_APIKEY)
-    app = heroku_conn.app(SECOND_A_APPNAME)
-    app.process_formation()[SECOND_PROCESSTYPE].scale(0)
-    print("The second app in the first acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(SECOND_B_APIKEY)
-    app = heroku_conn.app(SECOND_B_APPNAME)
-    app.process_formation()[SECOND_PROCESSTYPE].scale(1)
-    print("The second app in the second acc has been scaled up.")
-    print("Your second app has been shifted to the second acc.")
-  elif(today.day == 1):
-    print("Your second app is running on the second acc. Changing the dyno to the first acc..")
-    heroku_conn = heroku3.from_key(SECOND_B_APIKEY)
-    app = heroku_conn.app(SECOND_B_APPNAME)
-    app.process_formation()[SECOND_PROCESSTYPE].scale(0)
-    print("The second app in the second acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(SECOND_A_APIKEY)
-    app = heroku_conn.app(SECOND_A_APPNAME)
-    app.process_formation()[SECOND_PROCESSTYPE].scale(1)
-    print("The second app in the first acc has been scaled up.")
-    print("Your second app has been shifted to the first acc.")
-  else:
-    print("Today is not 1st or 15nd.")
-else:
-  print("Variables for the second app are not fully filled.")
-    
-# third pair of apps
-print("\n[#3] Checking the conditions for the third app..")
-if(len(THIRD_PROCESSTYPE) != 0 and len(THIRD_A_APIKEY) != 0 and len(THIRD_A_APPNAME) != 0 and len(THIRD_B_APIKEY) != 0 and len(THIRD_B_APPNAME) != 0):
-  if(today.day == 15):
-    print("Changing the dyno to the second acc..")
-    heroku_conn = heroku3.from_key(THIRD_A_APIKEY)
-    app = heroku_conn.app(THIRD_A_APPNAME)
-    app.process_formation()[THIRD_PROCESSTYPE].scale(0)
-    print("The third app in the first acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(THIRD_B_APIKEY)
-    app = heroku_conn.app(THIRD_B_APPNAME)
-    app.process_formation()[THIRD_PROCESSTYPE].scale(1)
-    print("The third app in the second acc has been scaled up.")
-    print("Your third app has been shifted to the second acc.")
-  elif(today.day == 1):
-    print("Changing the dyno to the first acc..")
-    heroku_conn = heroku3.from_key(THIRD_B_APIKEY)
-    app = heroku_conn.app(THIRD_B_APPNAME)
-    app.process_formation()[THIRD_PROCESSTYPE].scale(0)
-    print("The third app in the second acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(THIRD_A_APIKEY)
-    app = heroku_conn.app(THIRD_A_APPNAME)
-    app.process_formation()[THIRD_PROCESSTYPE].scale(1)
-    print("The third app in the first acc has been scaled up.")
-    print("Your third app has been shifted to the first acc.")
-  else:
-    print("Today is not 1st or 15nd.")
-else:
-  print("Variables for the third app are not fully filled.")
-    
-# fourth pair of apps
-print("\n[#4] Checking the conditions for the fourth app..")
-if(len(FOURTH_PROCESSTYPE) != 0 and len(FOURTH_A_APIKEY) != 0 and len(FOURTH_A_APPNAME) != 0 and len(FOURTH_B_APIKEY) != 0 and len(FOURTH_B_APPNAME) != 0):
-  if(today.day == 15):
-    print("Changing the dyno to the second acc..")
-    heroku_conn = heroku3.from_key(FOURTH_A_APIKEY)
-    app = heroku_conn.app(FOURTH_A_APPNAME)
-    app.process_formation()[FOURTH_PROCESSTYPE].scale(0)
-    print("The fourth app in the first acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(FOURTH_B_APIKEY)
-    app = heroku_conn.app(FOURTH_B_APPNAME)
-    app.process_formation()[FOURTH_PROCESSTYPE].scale(1)
-    print("The fourth app in the second acc has been scaled up.")
-    print("Your fourth app has been shifted to the second acc.")
-  elif(today.day == 1):
-    print("Changing the dyno to the first acc..")
-    heroku_conn = heroku3.from_key(FOURTH_B_APIKEY)
-    app = heroku_conn.app(FOURTH_B_APPNAME)
-    app.process_formation()[FOURTH_PROCESSTYPE].scale(0)
-    print("The fourth app in the second acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(FOURTH_A_APIKEY)
-    app = heroku_conn.app(FOURTH_A_APPNAME)
-    app.process_formation()[FOURTH_PROCESSTYPE].scale(1)
-    print("The fourth app in the first acc has been scaled up.")
-    print("Your fourth app has been shifted to the first acc.")
-  else:
-    print("Today is not 1st or 15nd.")
-else:
-  print("Variables for the fourth app are not fully filled.")
-    
-# fifth pair of apps
-print("\n[#5] Checking the conditions for the fifth app..")
-if(len(FIFTH_PROCESSTYPE) != 0 and len(FIFTH_A_APIKEY) != 0 and len(FIFTH_A_APPNAME) != 0 and len(FIFTH_B_APIKEY) != 0 and len(FIFTH_B_APPNAME) != 0):
-  if(today.day == 15):
-    print("Changing the dyno to the second acc..")
-    heroku_conn = heroku3.from_key(FIFTH_A_APIKEY)
-    app = heroku_conn.app(FIFTH_A_APPNAME)
-    app.process_formation()[FIFTH_PROCESSTYPE].scale(0)
-    print("The fifth app in the first acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(FIFTH_B_APIKEY)
-    app = heroku_conn.app(FIFTH_B_APPNAME)
-    app.process_formation()[FIFTH_PROCESSTYPE].scale(1)
-    print("The fifth app in the second acc has been scaled up.")
-    print("Your fifth app has been shifted to the second acc.")
-  elif(today.day == 1):
-    print("Changing the dyno to the first acc..")
-    heroku_conn = heroku3.from_key(FIFTH_B_APIKEY)
-    app = heroku_conn.app(FIFTH_B_APPNAME)
-    app.process_formation()[FIFTH_PROCESSTYPE].scale(0)
-    print("[#5] The fifth app in the second acc has been scaled down.")
-    time.sleep(5)
-    heroku_conn = heroku3.from_key(FIFTH_A_APIKEY)
-    app = heroku_conn.app(FIFTH_A_APPNAME)
-    app.process_formation()[FIFTH_PROCESSTYPE].scale(1)
-    print("The fifth app in the first acc has been scaled up.")
-    print("Your fifth app has been shifted to the first acc.")
-  else:
-    print("Today is not 1st or 15nd.")
-else:
-  print("Variables for the fifth app are not fully filled.")
-    
-# Ending the current process
-print("\nThe script has been executed.")
+  print("Variables for the app are not fully filled. RECHECK AGAIN.")
+     
+# Ending the Current process >>>>>>>>
+print("\nThe Script has been Executed.")

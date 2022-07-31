@@ -10,8 +10,8 @@ from os import environ
 from datetime import datetime
 from heroku3 import from_key as from_apikey
 
-def getVar(var: str):
-    return environ[var]
+def getVar(var: str, val: str):
+    return environ.get(var, val)
 
 # Required vars >>>>>>>> Add Unlimited Number of Apps separated by space in each var
 # A = The Credentials of the First Account

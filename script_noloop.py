@@ -6,9 +6,12 @@
 
 from itertools import zip_longest
 from time import sleep
-from os.environ import get as getVar
+from os import environ
 from datetime import datetime
 from heroku3 import from_key as from_apikey
+
+def getVar(var: str):
+    return environ[var]
 
 # Required vars >>>>>>>> Add Unlimited Number of Apps separated by space in each var
 # A = The Credentials of the First Account
